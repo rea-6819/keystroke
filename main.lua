@@ -36,7 +36,7 @@ local KeyPositions = {
 }
 
 local Config = {
-    BaseImage = "rbxassetid://6073763318",
+    BaseImage = "rbxassetid://87263696220840",
     KeySize = 35,
     Spacing = 6,
     RainbowSpeed = 3
