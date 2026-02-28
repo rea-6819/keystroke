@@ -8,7 +8,7 @@ local TweenService = game:GetService("TweenService")
 -- 初期設定
 -- ==========================================
 local Config = {
-    ImageID = "rbxassetid://130160474366428", -- あなたの背景画像
+    ImageID = "rbxassetid://94143377880990", -- あなたの背景画像
     RainbowSpeed = 3,
     KeySize = 32,
     Padding = 4,
