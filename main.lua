@@ -1,4 +1,4 @@
--- [[ GAMI ULTIMATE VISIBILITY - INVERTED COLOR EDITION ]] --
+-- [[ GAMI ULTIMATE - GLOBAL INPUT & LEFT-BOTTOM FIXED ]] --
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local CoreGui = game:GetService("CoreGui")
@@ -45,7 +45,8 @@ local sg = Instance.new("ScreenGui", CoreGui)
 sg.Name = "Keystroke"
 
 local mainFrame = Instance.new("Frame", sg)
-mainFrame.Position = UDim2.new(0.5, -150, 0.75, 0)
+-- 最初から左下に配置 (Positionを調整)
+mainFrame.Position = UDim2.new(0.02, 0, 0.7, 0)
 mainFrame.BackgroundTransparency = 1
 mainFrame.Size = UDim2.new(0, 350, 0, 220)
 mainFrame.Active = true
@@ -107,40 +108,50 @@ RunService.RenderStepped:Connect(function()
     if activeKeys.RMB then activeKeys.RMB.label.Text = "RMB\n" .. updateCPS(clicks.RMB) end
 end)
 
--- 入力アクション
+-- 反転エフェクト
 local function pressEffect(name, isPressed)
     local targetKey = activeKeys[name]
     if targetKey then
         if isPressed then
-            -- 押したとき：背景を白、文字を黒に反転
             TweenService:Create(targetKey.frame, TweenInfo.new(0.05), {BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.1}):Play()
             targetKey.label.TextColor3 = Color3.new(0, 0, 0)
         else
-            -- 離したとき：元の黒半透明に戻す
             TweenService:Create(targetKey.frame, TweenInfo.new(0.1), {BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.5}):Play()
             targetKey.label.TextColor3 = Color3.new(1, 1, 1)
         end
     end
 end
 
-UserInputService.InputBegan:Connect(function(input, gpe)
-    if gpe then return end
+-- 全入力取得 (GameProcessedEventを無視)
+UserInputService.InputBegan:Connect(function(input)
+    -- ここで gpe チェックを外したため、チャット中などでも取得可能
     local name = input.KeyCode.Name
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then name = "LMB" table.insert(clicks.LMB, tick()) end
-    if input.UserInputType == Enum.UserInputType.MouseButton2 then name = "RMB" table.insert(clicks.RMB, tick()) end
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then 
+        name = "LMB" 
+        table.insert(clicks.LMB, tick()) 
+    elseif input.UserInputType == Enum.UserInputType.MouseButton2 then 
+        name = "RMB" 
+        table.insert(clicks.RMB, tick()) 
+    end
     pressEffect(name, true)
 end)
 
 UserInputService.InputEnded:Connect(function(input)
     local name = input.KeyCode.Name
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then name = "LMB" end
-    if input.UserInputType == Enum.UserInputType.MouseButton2 then name = "RMB" end
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then 
+        name = "LMB" 
+    elseif input.UserInputType == Enum.UserInputType.MouseButton2 then 
+        name = "RMB" 
+    end
     pressEffect(name, false)
 end)
 
--- Pキー移動
+-- Pキー移動モード（一応残してあります）
 local mMode = false
-UserInputService.InputBegan:Connect(function(input) if input.KeyCode == Enum.KeyCode.P then mMode = not mMode end end)
+UserInputService.InputBegan:Connect(function(input) 
+    if input.KeyCode == Enum.KeyCode.P then mMode = not mMode end 
+end)
+
 mainFrame.InputBegan:Connect(function(input)
     if mMode and input.UserInputType == Enum.UserInputType.MouseButton1 then
         local dS, sP = input.Position, mainFrame.Position
